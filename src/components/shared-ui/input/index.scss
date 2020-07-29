@@ -1,0 +1,12 @@
+@import "src/shared/styles/colors";
+
+.input {
+  width: 100%;
+  font-size: 16px;
+  line-height: 2;
+  border-top: none;
+  border-right: none;
+  border-bottom: 1px solid $mainColor;
+  border-left: none;
+  outline: none;
+}

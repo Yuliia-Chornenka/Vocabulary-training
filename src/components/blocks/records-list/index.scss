@@ -1,0 +1,40 @@
+@import "src/shared/styles/colors";
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0 -20px;
+
+  &__item {
+    padding: 0 20px 20px 20px;
+    display: flex;
+    justify-content: space-between;
+
+    &:not(:last-of-type) {
+      border-bottom: 1px solid $mainColor;
+      box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.2);
+      margin-bottom: 30px;
+    }
+
+    &:last-of-type {
+      padding: 0 20px;
+    }
+
+    &-container {
+      width: 90%;
+      display: inline-block;
+    }
+
+    &-name {
+      margin: 0;
+
+      &--bold {
+        font-weight: bold;
+      }
+
+      &--italic {
+        font-style: italic;
+      }
+    }
+  }
+}
