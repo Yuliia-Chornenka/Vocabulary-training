@@ -18,6 +18,28 @@ export default class LexicoService {
         return localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(initialVocabulary));
     }
 
+    createDeck(title) {
+        const newDeck = {
+            id: Date.now() + '',
+            title,
+            iteration: 0,
+            lastRepetition: null,
+            learnedRecordsIds: [],
+            nextRepetition: null,
+            recordsIds: [],
+            status: "inProgress",
+            type: "deck",
+        };
+        const vocabulary = JSON.parse(localStorage.getItem(LOCALSTORAGE_KEY));
+        vocabulary.decks.push(newDeck);
+        vocabulary.appData.decksCount++;
+        return localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(vocabulary));
+    }
+
+    createRecord(title) {
+        console.log('create record', title)
+    }
+
     getVocabulary() {
         return JSON.parse(localStorage.getItem(LOCALSTORAGE_KEY));
     }
@@ -54,7 +76,17 @@ export default class LexicoService {
     deleteVocabulary() {
         return new Promise((resolve) => {
             localStorage.removeItem(LOCALSTORAGE_KEY);
-            resolve(true);
+            const initialVocabulary = {
+                appData: {
+                    decksCount: 0,
+                    learnedDecksCount: 0,
+                    recordsCount: 0,
+                    learnedRecordsCount: 0,
+                },
+                decks: [],
+                records: [],
+            };
+            resolve(localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(initialVocabulary)));
         });
     }
 }

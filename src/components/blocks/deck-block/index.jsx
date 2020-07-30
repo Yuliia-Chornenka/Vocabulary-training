@@ -29,19 +29,21 @@ class DeckBlock extends Component {
 
     searchedDecks = () => {
         const { decksArray, searchValue } = this.props;
-        const searchedDecks = decksArray.filter((deck) => deck.title.indexOf(searchValue) > -1);
+        const valueStartSearch = searchValue.length > 1 ? searchValue : '';
+        const searchedDecks = decksArray.filter((deck) => deck.title.indexOf(valueStartSearch) > -1);
         this.setState({ isDeckExist: !!searchedDecks.length });
     };
 
     render() {
-        const { backBtn, history, searchValue, decksArray } = this.props;
+        const { backBtn, history, searchValue, decksArray, createNewDeck } = this.props;
         const { isDeckExist } = this.state;
+        const valueStartSearch = searchValue.length > 1 ? searchValue : '';
         return (
             <Fragment>
                 {isDeckExist ? (
                     <Fragment>
-                        {decksArray.filter((deck) => deck.title.indexOf(searchValue) > -1)
-                            .map((deck, i) => (
+                        {decksArray.filter((deck) => deck.title.indexOf(valueStartSearch) > -1)
+                            .map((deck) => (
                                 <Container key={deck.id}>
                                     <ContainerTitle name={deck.title} />
                                     <ProgressBar />
@@ -65,6 +67,7 @@ class DeckBlock extends Component {
                     <NotFoundValue
                         searchValue={searchValue}
                         blockName='deck'
+                        createNewDeck={createNewDeck}
                     />
                 )}
             </Fragment>

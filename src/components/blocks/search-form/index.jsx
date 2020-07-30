@@ -5,7 +5,7 @@ import { Input } from '../../shared-ui/input';
 
 export class SearchForm extends Component {
     render() {
-        const { label, handleChange, isMoreLetters } = this.props;
+        const { label, handleChange, isMoreLetters, value } = this.props;
         return (
             <Container>
                 <p className='search__title'> {label} </p>
@@ -13,6 +13,7 @@ export class SearchForm extends Component {
                     type='text'
                     placeholder='type here...'
                     onChange={handleChange}
+                    value={value}
                 />
                 {isMoreLetters && (
                     <p className='search__more-letters'> need more letters </p>

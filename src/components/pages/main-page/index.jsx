@@ -26,6 +26,16 @@ export class MainPage extends Component {
         });
     }
 
+    createNewDeck = () => {
+        const { searchValue } = this.state;
+        this.lexicoService.createDeck(searchValue);
+        const vocabulary = this.lexicoService.getVocabulary();
+        this.setState({
+            decksArray: vocabulary.decks,
+            searchValue: ''
+        });
+    };
+
     loadVocabulary = () => {
         this.reader = new FileReader();
         this.reader.onload = (event) => {
@@ -56,7 +66,7 @@ export class MainPage extends Component {
 
     handleChange = (e) => {
         this.setState({
-            searchValue: e.target.value.length > 1 ? e.target.value : '',
+            searchValue: e.target.value,
             isMoreLetters: e.target.value.length === 1
         });
     };
@@ -83,14 +93,15 @@ export class MainPage extends Component {
                         searchValue={searchValue}
                         decksArray={decksArray}
                         isDeckPage={false}
+                        createNewDeck={this.createNewDeck}
                     />
                 )}
-                {(!isVocabulary && searchValue) && (
+                {(!isVocabulary && searchValue) &&
                     <NotFoundValue
                         searchValue={searchValue}
                         blockName='deck'
-                    />
-                )}
+                        createNewDeck={this.createNewDeck}
+                    />}
             </Fragment>
         )
     };

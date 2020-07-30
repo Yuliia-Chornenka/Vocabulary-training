@@ -36,7 +36,7 @@ class DeckPage extends Component {
 
     handleChange = (e) => {
         this.setState({
-            searchValue: e.target.value.length > 1 ? e.target.value : '',
+            searchValue: e.target.value,
             isMoreLetters: e.target.value.length === 1
         });
     };
@@ -52,7 +52,11 @@ class DeckPage extends Component {
                     isDeckPage={true}
                 />
                 <Link to='/deck/train'>
-                    <Button name='Train' className='btn__second btn__big' />
+                    <Button
+                        name='Train'
+                        className='btn__second btn__big'
+                        disabled={!recordsList.length}
+                    />
                 </Link>
                 <SearchForm
                     label='to search or create records'

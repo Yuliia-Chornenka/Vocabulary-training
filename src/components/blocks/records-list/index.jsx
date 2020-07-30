@@ -4,6 +4,8 @@ import { ProgressBar } from '../../shared-ui/progress-bar';
 import { Button } from '../../shared-ui/button';
 import { Container } from "../../shared-ui/container";
 import { NotFoundValue } from '../not-found-value';
+import LexicoService from "../../../services/lexico-service";
+
 
 export class RecordsList extends Component {
     constructor(props) {
@@ -12,54 +14,62 @@ export class RecordsList extends Component {
             isRecordExist: true,
         };
     }
+    lexicoService = new LexicoService();
 
     componentDidUpdate(prevProps) {
         if (this.props.searchValue !== prevProps.searchValue) {
-            this.searchedDecks();
+            this.searchRecords();
         }
     }
 
-    searchedDecks = () => {
+    searchRecords = () => {
         const { list, searchValue } = this.props;
-        const searchedRecords = list.filter((record) => record.firstSide.indexOf(searchValue) > -1
-            || record.secondSide.indexOf(searchValue) > -1);
+        const valueStartSearch = searchValue.length > 1 ? searchValue : '';
+        const searchedRecords = list.filter((record) => record.firstSide.indexOf(valueStartSearch) > -1
+            || record.secondSide.indexOf(valueStartSearch) > -1);
         this.setState({
             isRecordExist: !!searchedRecords.length,
         });
     };
 
+    createNewRecord = () => {
+        const { searchValue } = this.props;
+        this.lexicoService.createRecord(searchValue);
+    };
 
     render() {
         const { list, searchValue } = this.props;
         const { isRecordExist } = this.state;
+        const valueStartSearch = searchValue.length > 1 ? searchValue : '';
         return (
             <Fragment>
-                {isRecordExist ? (
-                    <Container>
-                        <ul className='list'>
-                            {list.filter((record) => record.firstSide.indexOf(searchValue) > -1
-                                || record.secondSide.indexOf(searchValue) > -1)
-                                .map((record, i) => (
-                                    <li
-                                        key={record.id}
-                                        className='list__item'
-                                    >
-                                        <div className='list__item-container'>
-                                            <p className='list__item-name list__item-name--bold'>{record.firstSide}</p>
-                                            <ProgressBar />
-                                            <p className='list__item-name list__item-name--italic'>{record.secondSide}</p>
-                                        </div>
-                                        <Button name='Delete' className='btn__danger' />
-                                    </li>
-                                ))}
-                        </ul>
-                    </Container>
-                ) : (
-                    <NotFoundValue
-                        searchValue={searchValue}
-                        blockName='record'
-                    />
-                )}
+                {(isRecordExist && !!list.length) &&
+                <Container>
+                    <ul className='list'>
+                        {list.filter((record) => record.firstSide.indexOf(valueStartSearch) > -1
+                            || record.secondSide.indexOf(valueStartSearch) > -1)
+                            .map((record, i) => (
+                                <li
+                                    key={record.id}
+                                    className='list__item'
+                                >
+                                    <div className='list__item-container'>
+                                        <p className='list__item-name list__item-name--bold'>{record.firstSide}</p>
+                                        <ProgressBar />
+                                        <p className='list__item-name list__item-name--italic'>{record.secondSide}</p>
+                                    </div>
+                                    <Button name='Delete' className='btn__danger' />
+                                </li>
+                            ))}
+                    </ul>
+                </Container>}
+
+                {!isRecordExist &&
+                <NotFoundValue
+                    searchValue={searchValue}
+                    blockName='record'
+                    createNewRecord={this.createNewRecord}
+                />}
             </Fragment>
         );
     }
