@@ -21,8 +21,8 @@ export class MainPage extends Component {
     componentDidMount() {
         const vocabulary = this.lexicoService.getVocabulary();
         this.setState({
-            isVocabulary: !!vocabulary,
-            decksArray: vocabulary ? vocabulary.decks : []
+            isVocabulary: !!vocabulary ? !!vocabulary.decks.length : false,
+            decksArray: !!vocabulary ? vocabulary.decks : []
         });
     }
 

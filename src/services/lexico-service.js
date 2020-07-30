@@ -1,6 +1,23 @@
 const LOCALSTORAGE_KEY = 'vocabulary';
 
 export default class LexicoService {
+    setInitialVocabulary() {
+        if (localStorage.getItem(LOCALSTORAGE_KEY)) {
+            return
+        }
+        const initialVocabulary = {
+            appData: {
+                decksCount: 0,
+                learnedDecksCount: 0,
+                recordsCount: 0,
+                learnedRecordsCount: 0,
+            },
+            decks: [],
+            records: [],
+        };
+        return localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(initialVocabulary));
+    }
+
     getVocabulary() {
         return JSON.parse(localStorage.getItem(LOCALSTORAGE_KEY));
     }
