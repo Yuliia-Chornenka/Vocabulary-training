@@ -55,7 +55,8 @@ export default class LexicoService {
     }
 
     exportVocabulary(data) {
-        const dataString = 'data:text/json;charset=utf-8,' + encodeURIComponent(data);
+        const dataString = 'data:text/json;charset=utf-8,' +
+            encodeURIComponent(JSON.stringify(data));
 
         const downloadAnchorElem = document.createElement('a');
         downloadAnchorElem.setAttribute('href', dataString);
