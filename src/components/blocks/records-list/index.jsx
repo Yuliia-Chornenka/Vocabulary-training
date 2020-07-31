@@ -4,14 +4,15 @@ import { ProgressBar } from '../../shared-ui/progress-bar';
 import { Button } from '../../shared-ui/button';
 import { Container } from "../../shared-ui/container";
 import { NotFoundValue } from '../not-found-value';
+import  { CreateRecordForm}  from '../create-record-form';
 import LexicoService from "../../../services/lexico-service";
-
 
 export class RecordsList extends Component {
     constructor(props) {
         super(props);
         this.state = {
             isRecordExist: true,
+            isNewRecordForm: false,
         };
     }
     lexicoService = new LexicoService();
@@ -27,18 +28,12 @@ export class RecordsList extends Component {
         const valueStartSearch = searchValue.length > 1 ? searchValue : '';
         const searchedRecords = list.filter((record) => record.firstSide.indexOf(valueStartSearch) > -1
             || record.secondSide.indexOf(valueStartSearch) > -1);
-        this.setState({
-            isRecordExist: !!searchedRecords.length,
-        });
-    };
-
-    createNewRecord = () => {
-        const { searchValue } = this.props;
-        this.lexicoService.createRecord(searchValue);
+        this.setState({ isRecordExist: !!searchedRecords.length });
     };
 
     render() {
-        const { list, searchValue } = this.props;
+        const { list, searchValue, handleChange, openNewRecordForm, isNewRecordForm,
+            handleChangeSecondSide, valueSecondSide, createNewRecord, cancelCreationRecord } = this.props;
         const { isRecordExist } = this.state;
         const valueStartSearch = searchValue.length > 1 ? searchValue : '';
         return (
@@ -64,11 +59,20 @@ export class RecordsList extends Component {
                     </ul>
                 </Container>}
 
-                {!isRecordExist &&
+                {(!isRecordExist && !isNewRecordForm) &&
                 <NotFoundValue
                     searchValue={searchValue}
                     blockName='record'
-                    createNewRecord={this.createNewRecord}
+                    openNewRecordForm={openNewRecordForm}
+                />}
+                {isNewRecordForm &&
+                <CreateRecordForm
+                    handleChangeFirstSide={handleChange}
+                    valueFirstSide={searchValue}
+                    handleChangeSecondSide={handleChangeSecondSide}
+                    valueSecondSide={valueSecondSide}
+                    createNewRecord={createNewRecord}
+                    cancelCreationRecord={cancelCreationRecord}
                 />}
             </Fragment>
         );

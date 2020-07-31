@@ -14,12 +14,28 @@ class DeckPage extends Component {
             recordsList: [],
             searchValue: '',
             isMoreLetters: false,
+            isNewRecordForm: false,
+            valueSecondSide: ''
         };
     }
 
     lexicoService = new LexicoService();
 
     componentDidMount() {
+        this.getRecordsList();
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (this.state.recordsList.length !== prevState.recordsList.length) {
+            this.getRecordsList();
+            this.setState({
+                isNewRecordForm: false,
+                searchValue: '',
+            });
+        }
+    }
+
+    getRecordsList = () => {
         const { match } = this.props;
         const { id } = match.params;
         const deck = this.lexicoService.getDeck(id);
@@ -32,7 +48,7 @@ class DeckPage extends Component {
             decksArray: [ deck ],
             recordsList: recordsList
         });
-    }
+    };
 
     handleChange = (e) => {
         this.setState({
@@ -41,8 +57,37 @@ class DeckPage extends Component {
         });
     };
 
+    handleChangeSecondSide = (e) => {
+        this.setState({ valueSecondSide: e.target.value });
+    };
+
+    openNewRecordForm = () => {
+        this.setState({ isNewRecordForm: true });
+    };
+
+    createNewRecord = () => {
+        const { searchValue, valueSecondSide } = this.state;
+        const { match } = this.props;
+        const { id } = match.params;
+        this.lexicoService.createRecord(searchValue, valueSecondSide, id).then(
+            result => {
+                this.setState({
+                    recordsList: result.records,
+                    valueSecondSide: ''
+                });
+            },
+        );
+    };
+
+    cancelCreationRecord = () => {
+        this.setState({
+            isNewRecordForm: false,
+            searchValue: '',
+        })
+    };
+
     render() {
-        const { decksArray, recordsList, isMoreLetters, searchValue, } = this.state;
+        const { decksArray, recordsList, isMoreLetters, searchValue, isNewRecordForm, valueSecondSide } = this.state;
         return (
             <Fragment>
                 <DeckBlock
@@ -58,15 +103,23 @@ class DeckPage extends Component {
                         disabled={!recordsList.length}
                     />
                 </Link>
+                {!isNewRecordForm &&
                 <SearchForm
                     label='to search or create records'
                     handleChange={this.handleChange}
                     value={searchValue}
                     isMoreLetters={isMoreLetters}
-                />
+                />}
                 <RecordsList
                     list={recordsList}
                     searchValue={searchValue}
+                    handleChange={this.handleChange}
+                    openNewRecordForm={this.openNewRecordForm}
+                    handleChangeSecondSide={this.handleChangeSecondSide}
+                    valueSecondSide={valueSecondSide}
+                    isNewRecordForm={isNewRecordForm}
+                    createNewRecord={this.createNewRecord}
+                    cancelCreationRecord={this.cancelCreationRecord}
                 />
             </Fragment>
         )

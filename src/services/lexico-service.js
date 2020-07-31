@@ -36,8 +36,26 @@ export default class LexicoService {
         return localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(vocabulary));
     }
 
-    createRecord(title) {
-        console.log('create record', title)
+    createRecord(valueFirstSide, valueSecondSide, deckId) {
+        return new Promise((resolve) => {
+            const recordId = Date.now() + '';
+            const newRecord = {
+                id: recordId,
+                firstSide: valueFirstSide,
+                secondSide: valueSecondSide,
+                deckId: deckId,
+                iteration: 0,
+                lastRepetition: null,
+                nextRepetition: null
+            };
+            const vocabulary = JSON.parse(localStorage.getItem(LOCALSTORAGE_KEY));
+            vocabulary.records.push(newRecord);
+            vocabulary.appData.recordsCount++;
+            const deckById = vocabulary.decks.find(deck => deck.id === deckId);
+            deckById.recordsIds.push(recordId);
+            localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(vocabulary))
+            resolve(vocabulary);
+        });
     }
 
     getVocabulary() {
