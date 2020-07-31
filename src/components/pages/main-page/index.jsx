@@ -12,7 +12,9 @@ export class MainPage extends Component {
             isVocabulary: false,
             searchValue: '',
             isMoreLetters: false,
-            decksArray: []
+            decksArray: [],
+            decksCount: 0,
+            recordsCount: 0,
         };
     }
 
@@ -22,7 +24,9 @@ export class MainPage extends Component {
         const vocabulary = this.lexicoService.getVocabulary();
         this.setState({
             isVocabulary: !!vocabulary ? !!vocabulary.decks.length : false,
-            decksArray: !!vocabulary ? vocabulary.decks : []
+            decksArray: !!vocabulary ? vocabulary.decks : [],
+            decksCount: vocabulary.decks.length,
+            recordsCount: vocabulary.records.length,
         });
     }
 
@@ -31,7 +35,9 @@ export class MainPage extends Component {
             const vocabulary = this.lexicoService.getVocabulary();
             this.setState({
                 isVocabulary: !!vocabulary ? !!vocabulary.decks.length : false,
-                decksArray: !!vocabulary ? vocabulary.decks : []
+                decksArray: !!vocabulary ? vocabulary.decks : [],
+                decksCount: vocabulary.decks.length,
+                recordsCount: vocabulary.records.length,
             });
         }
     }
@@ -91,7 +97,7 @@ export class MainPage extends Component {
     };
 
     render() {
-        const { isVocabulary, isMoreLetters, searchValue, decksArray } = this.state;
+        const { isVocabulary, isMoreLetters, searchValue, decksArray, decksCount, recordsCount } = this.state;
         return (
             <Fragment>
                 <AppBlock
@@ -99,6 +105,8 @@ export class MainPage extends Component {
                     loadVocabulary={this.loadVocabulary}
                     onFileChange={this.onFileChange}
                     resetVocabulary={this.resetVocabulary}
+                    decksCount={decksCount}
+                    recordsCount={recordsCount}
                 />
                 <SearchForm
                     label='to search or create decks'
