@@ -32,8 +32,8 @@ export class RecordsList extends Component {
     };
 
     render() {
-        const { list, searchValue, handleChange, openNewRecordForm, isNewRecordForm,
-            handleChangeSecondSide, valueSecondSide, createNewRecord, cancelCreationRecord } = this.props;
+        const { list, searchValue, handleChange, openNewRecordForm, isNewRecordForm, handleChangeSecondSide,
+            valueSecondSide, createNewRecord, cancelCreationRecord, deleteRecord } = this.props;
         const { isRecordExist } = this.state;
         const valueStartSearch = searchValue.length > 1 ? searchValue : '';
         return (
@@ -53,7 +53,11 @@ export class RecordsList extends Component {
                                         <ProgressBar />
                                         <p className='list__item-name list__item-name--italic'>{record.secondSide}</p>
                                     </div>
-                                    <Button name='Delete' className='btn__danger' />
+                                    <Button
+                                        name='Delete'
+                                        className='btn__danger'
+                                        onClick={()=>deleteRecord(record.id)}
+                                    />
                                 </li>
                             ))}
                     </ul>

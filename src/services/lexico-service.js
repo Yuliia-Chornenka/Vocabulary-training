@@ -121,4 +121,19 @@ export default class LexicoService {
             resolve(vocabulary);
         });
     }
+
+    deleteRecord(recordId, deckId) {
+        return new Promise((resolve) => {
+            const vocabulary = JSON.parse(localStorage.getItem(LOCALSTORAGE_KEY));
+            vocabulary.appData.recordsCount--;
+            const recordIndex = vocabulary.records.findIndex(record => record.id === recordId);
+            vocabulary.records.splice(recordIndex, 1);
+            const deckIndex = vocabulary.decks.findIndex(deck => deck.id === deckId);
+            const recordIndexInDecks = vocabulary.decks[deckIndex].recordsIds
+                .findIndex(record => record === recordId);
+            vocabulary.decks[deckIndex].recordsIds.splice(recordIndexInDecks, 1);
+            localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(vocabulary));
+            resolve(vocabulary);
+        });
+    }
 }

@@ -86,6 +86,16 @@ class DeckPage extends Component {
         })
     };
 
+    deleteRecord = (recordId) => {
+        const { match } = this.props;
+        const { id } = match.params;
+        this.lexicoService.deleteRecord(recordId, id).then(
+            result => {
+                this.setState({ recordsList: result.records });
+            },
+        );
+    };
+
     render() {
         const { decksArray, recordsList, isMoreLetters, searchValue, isNewRecordForm, valueSecondSide } = this.state;
         return (
@@ -120,6 +130,7 @@ class DeckPage extends Component {
                     isNewRecordForm={isNewRecordForm}
                     createNewRecord={this.createNewRecord}
                     cancelCreationRecord={this.cancelCreationRecord}
+                    deleteRecord={this.deleteRecord}
                 />
             </Fragment>
         )
