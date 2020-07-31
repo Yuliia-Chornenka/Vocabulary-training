@@ -31,6 +31,7 @@ export class MainPage extends Component {
         this.lexicoService.createDeck(searchValue);
         const vocabulary = this.lexicoService.getVocabulary();
         this.setState({
+            isVocabulary: true,
             decksArray: vocabulary.decks,
             searchValue: ''
         });
