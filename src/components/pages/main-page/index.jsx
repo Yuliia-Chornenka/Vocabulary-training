@@ -26,6 +26,16 @@ export class MainPage extends Component {
         });
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (this.state.decksArray.length !== prevState.decksArray.length) {
+            const vocabulary = this.lexicoService.getVocabulary();
+            this.setState({
+                isVocabulary: !!vocabulary ? !!vocabulary.decks.length : false,
+                decksArray: !!vocabulary ? vocabulary.decks : []
+            });
+        }
+    }
+
     createNewDeck = () => {
         const { searchValue } = this.state;
         this.lexicoService.createDeck(searchValue);
@@ -72,6 +82,14 @@ export class MainPage extends Component {
         });
     };
 
+    deleteDeck = (id) => {
+        this.lexicoService.deleteDeck(id).then(
+            result => {
+                this.setState({ decksArray: result.decks });
+            }
+        );
+    };
+
     render() {
         const { isVocabulary, isMoreLetters, searchValue, decksArray } = this.state;
         return (
@@ -95,6 +113,7 @@ export class MainPage extends Component {
                         decksArray={decksArray}
                         isDeckPage={false}
                         createNewDeck={this.createNewDeck}
+                        deleteDeck={this.deleteDeck}
                     />
                 )}
                 {(!isVocabulary && searchValue) &&

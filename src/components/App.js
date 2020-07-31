@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Header from './blocks/header';
-import { MainPage } from './pages/main-page';
+import { MainPage} from './pages/main-page';
 import DeckPage from './pages/deck-page';
 import LexicoService from '../services/lexico-service';
 

@@ -6,12 +6,15 @@ import { ContainerTitle } from '../../shared-ui/container-title';
 import { ProgressBar } from '../../shared-ui/progress-bar';
 import { Button } from '../../shared-ui/button';
 import { NotFoundValue } from '../not-found-value';
+import LexicoService from '../../../services/lexico-service';
 
 class DeckBlock extends Component {
     constructor(props) {
         super(props);
         this.state = { isDeckExist: true };
     }
+
+    lexicoService = new LexicoService();
 
     componentDidMount() {
         this.searchedDecks();
@@ -25,6 +28,10 @@ class DeckBlock extends Component {
         if (this.props.searchValue !== prevProps.searchValue) {
             this.searchedDecks();
         }
+
+        if (this.props.decksArray.length !== prevProps.decksArray.length) {
+            this.render()
+        }
     }
 
     searchedDecks = () => {
@@ -34,8 +41,14 @@ class DeckBlock extends Component {
         this.setState({ isDeckExist: !!searchedDecks.length });
     };
 
+    deleteDeck = (id) => {
+        const { history } = this.props;
+        this.lexicoService.deleteDeck(id);
+        history.push('/');
+    };
+
     render() {
-        const { backBtn, history, searchValue, decksArray, createNewDeck } = this.props;
+        const { backBtn, history, searchValue, decksArray, createNewDeck, deleteDeck } = this.props;
         const { isDeckExist } = this.state;
         const valueStartSearch = searchValue.length > 1 ? searchValue : '';
         return (
@@ -51,13 +64,31 @@ class DeckBlock extends Component {
                                         learned</p>
                                     <p>Learning in progress</p>
                                     <div className='btn__container'>
-                                        {backBtn
-                                            ? <Button name='Back' className='btn__main'
-                                                      onClick={history.goBack} />
-                                            : <Link to={`/deck/${deck.id}`}>
-                                                <Button name='See deck' className='btn__main' />
-                                            </Link>}
-                                        <Button name='Delete' className='btn__danger' />
+                                        {backBtn ?
+                                            <Fragment>
+                                                <Button
+                                                    name='Back'
+                                                    className='btn__main'
+                                                    onClick={history.goBack}
+                                                />
+                                                <Button
+                                                    name='Delete'
+                                                    className='btn__danger'
+                                                    onClick={() => this.deleteDeck(deck.id)}
+                                                />
+                                            </Fragment>
+                                            :
+                                            <Fragment>
+                                                <Link to={`/deck/${deck.id}`}>
+                                                    <Button name='See deck' className='btn__main' />
+                                                </Link>
+                                                <Button
+                                                    name='Delete'
+                                                    className='btn__danger'
+                                                    onClick={() => deleteDeck(deck.id)}
+                                                />
+                                            </Fragment>
+                                        }
                                     </div>
                                 </Container>
                             ))
