@@ -2,6 +2,11 @@
 
 .progress-bar {
   height: 2px;
-  margin: 0 auto;
   background-color: $lightMainColor;
+
+  &__big {
+    height: 5px;
+    margin-top: 20px;
+    background-color: rgb(255, 219, 220);
+  }
 }

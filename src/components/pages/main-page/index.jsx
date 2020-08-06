@@ -117,6 +117,7 @@ export class MainPage extends Component {
                 {isVocabulary && (
                     <DeckBlock
                         backBtn={false}
+                        deleteBtn={true}
                         searchValue={searchValue}
                         decksArray={decksArray}
                         isDeckPage={false}

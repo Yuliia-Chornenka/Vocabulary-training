@@ -48,7 +48,7 @@ class DeckBlock extends Component {
     };
 
     render() {
-        const { backBtn, history, searchValue, decksArray, createNewDeck, deleteDeck } = this.props;
+        const { backBtn, deleteBtn, history, searchValue, decksArray, createNewDeck, deleteDeck } = this.props;
         const { isDeckExist } = this.state;
         const valueStartSearch = searchValue.length > 1 ? searchValue : '';
         return (
@@ -59,10 +59,11 @@ class DeckBlock extends Component {
                             .map((deck) => (
                                 <Container key={deck.id}>
                                     <ContainerTitle name={deck.title} />
-                                    <ProgressBar />
-                                    <p>{deck.learnedRecordsIds.length}/{deck.recordsIds.length} records
-                                        learned</p>
-                                    <p>Learning in progress</p>
+                                    <ProgressBar className='progress-bar' />
+                                    <p>
+                                        {deck.learnedRecordsIds.length}/{deck.recordsIds.length} records learned
+                                    </p>
+                                    {deleteBtn && <p>Learning in progress</p>}
                                     <div className='btn__container'>
                                         {backBtn ?
                                             <Fragment>
@@ -71,11 +72,11 @@ class DeckBlock extends Component {
                                                     className='btn__main'
                                                     onClick={history.goBack}
                                                 />
-                                                <Button
+                                                {deleteBtn && <Button
                                                     name='Delete'
                                                     className='btn__danger'
                                                     onClick={() => this.deleteDeck(deck.id)}
-                                                />
+                                                />}
                                             </Fragment>
                                             :
                                             <Fragment>

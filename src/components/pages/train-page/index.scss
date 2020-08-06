@@ -1,0 +1,11 @@
+@import "src/shared/styles/colors";
+
+.sound {
+  width: 73%;
+  margin: 50px auto;
+
+  &__link {
+    color: $mainColor;
+    font-weight: bold;
+  }
+}

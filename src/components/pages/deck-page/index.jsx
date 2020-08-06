@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { SearchForm } from '../../blocks/search-form';
 import DeckBlock from '../../blocks/deck-block';
-import { Link, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import { Button } from "../../shared-ui/button";
 import { RecordsList } from "../../blocks/records-list";
 import LexicoService from "../../../services/lexico-service";
@@ -97,22 +97,23 @@ class DeckPage extends Component {
     };
 
     render() {
+        const { history, location } = this.props;
         const { decksArray, recordsList, isMoreLetters, searchValue, isNewRecordForm, valueSecondSide } = this.state;
         return (
             <Fragment>
                 <DeckBlock
                     backBtn={true}
+                    deleteBtn={true}
                     decksArray={decksArray}
                     searchValue=''
                     isDeckPage={true}
                 />
-                <Link to='/deck/train'>
                     <Button
                         name='Train'
                         className='btn__second btn__big'
                         disabled={!recordsList.length}
+                        onClick={() => history.push(`${location.pathname}/train`)}
                     />
-                </Link>
                 {!isNewRecordForm &&
                 <SearchForm
                     label='to search or create records'

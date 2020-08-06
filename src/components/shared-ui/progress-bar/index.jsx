@@ -3,6 +3,8 @@ import './index.scss';
 
 export const ProgressBar = (props) => {
     return (
-        <div className='progress-bar' {...props} />
+        <div
+            {...props}
+        />
     )
 };
