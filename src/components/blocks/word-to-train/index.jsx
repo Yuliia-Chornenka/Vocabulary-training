@@ -1,10 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
 import './index.scss';
 import { Container } from '../../shared-ui/container';
 
-export class WordToTrain extends Component {
-    render() {
-        const { wordFirstSide } = this.props;
+export const WordToTrain = ({ wordFirstSide }) => {
         return (
             <Container>
                 <p className='train-word'>
@@ -12,5 +10,4 @@ export class WordToTrain extends Component {
                 </p>
             </Container>
         )
-    }
-}
+};

@@ -23,11 +23,9 @@ export default class LexicoService {
             id: Date.now() + '',
             title,
             iteration: 0,
-            lastRepetition: null,
             learnedRecordsIds: [],
-            nextRepetition: null,
             recordsIds: [],
-            status: "inProgress",
+            status: "in progress",
             type: "deck",
         };
         const vocabulary = JSON.parse(localStorage.getItem(LOCALSTORAGE_KEY));
@@ -45,17 +43,44 @@ export default class LexicoService {
                 secondSide: valueSecondSide,
                 deckId: deckId,
                 iteration: 0,
-                lastRepetition: null,
-                nextRepetition: null
             };
             const vocabulary = JSON.parse(localStorage.getItem(LOCALSTORAGE_KEY));
             vocabulary.records.push(newRecord);
             vocabulary.appData.recordsCount++;
             const deckById = vocabulary.decks.find(deck => deck.id === deckId);
             deckById.recordsIds.push(recordId);
-            localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(vocabulary))
+            deckById.status = "in progress";
+            localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(vocabulary));
             resolve(vocabulary);
         });
+    }
+
+    learnRecord(id) {
+        const vocabulary = JSON.parse(localStorage.getItem(LOCALSTORAGE_KEY));
+        const learnedRecord = vocabulary.records.find(record => record.id === id);
+        learnedRecord.iteration++;
+        localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(vocabulary))
+    }
+
+    setLearnedRecord(deckId, recordId) {
+        const vocabulary = JSON.parse(localStorage.getItem(LOCALSTORAGE_KEY));
+        vocabulary.appData.learnedRecordsCount++;
+        const deck = vocabulary.decks.find(deck => deck.id === deckId);
+        if(deck.learnedRecordsIds.indexOf(recordId) === -1){
+            deck.learnedRecordsIds = [...deck.learnedRecordsIds, recordId];
+        }
+        localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(vocabulary))
+    }
+
+    learnDeck(id) {
+        const vocabulary = JSON.parse(localStorage.getItem(LOCALSTORAGE_KEY));
+        const learnedDeck = vocabulary.decks.find(deck => deck.id === id);
+        learnedDeck.iteration++;
+        learnedDeck.status = 'learned';
+        if (learnedDeck.iteration === 1) {
+            vocabulary.appData.learnedDecksCount++
+        }
+        localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(vocabulary))
     }
 
     getVocabulary() {
@@ -113,6 +138,10 @@ export default class LexicoService {
         return new Promise((resolve) => {
             const vocabulary = JSON.parse(localStorage.getItem(LOCALSTORAGE_KEY));
             vocabulary.appData.decksCount--;
+            const deck= vocabulary.decks.find(deck => deck.id === id);
+            if(deck.iteration >= 1) {
+                vocabulary.appData.learnedDecksCount--;
+            }
             const deckIndex = vocabulary.decks.findIndex(deck => deck.id === id);
             vocabulary.decks.splice(deckIndex, 1);
             vocabulary.records = vocabulary.records.filter(record => record.deckId !== id);
@@ -126,12 +155,19 @@ export default class LexicoService {
         return new Promise((resolve) => {
             const vocabulary = JSON.parse(localStorage.getItem(LOCALSTORAGE_KEY));
             vocabulary.appData.recordsCount--;
+            const record = vocabulary.records.find(record => record.id === recordId);
+            if(record.iteration >= 5) {
+                vocabulary.appData.learnedRecordsCount--;
+            }
             const recordIndex = vocabulary.records.findIndex(record => record.id === recordId);
             vocabulary.records.splice(recordIndex, 1);
             const deckIndex = vocabulary.decks.findIndex(deck => deck.id === deckId);
             const recordIndexInDecks = vocabulary.decks[deckIndex].recordsIds
                 .findIndex(record => record === recordId);
             vocabulary.decks[deckIndex].recordsIds.splice(recordIndexInDecks, 1);
+            const learnedRecordIndexInDecks = vocabulary.decks[deckIndex].learnedRecordsIds
+                .findIndex(record => record === recordId);
+            vocabulary.decks[deckIndex].learnedRecordsIds.splice(learnedRecordIndexInDecks, 1);
             localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(vocabulary));
             resolve(vocabulary);
         });

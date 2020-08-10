@@ -6,7 +6,6 @@ import DeckPage from './pages/deck-page';
 import TrainPage from './pages/train-page';
 import LexicoService from '../services/lexico-service';
 
-
 class App extends Component {
     lexicoService = new LexicoService();
 

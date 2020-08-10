@@ -3,7 +3,7 @@ import './index.scss';
 import { ProgressBar } from '../../shared-ui/progress-bar';
 import { Button } from '../../shared-ui/button';
 import { Container } from "../../shared-ui/container";
-import { NotFoundValue } from '../not-found-value';
+import NotFoundValue from '../not-found-value';
 import  { CreateRecordForm}  from '../create-record-form';
 import LexicoService from "../../../services/lexico-service";
 
@@ -50,7 +50,12 @@ export class RecordsList extends Component {
                                 >
                                     <div className='list__item-container'>
                                         <p className='list__item-name list__item-name--bold'>{record.firstSide}</p>
-                                        <ProgressBar />
+                                        <ProgressBar
+                                            height='2px'
+                                            marginTop='0'
+                                            percent={ (record.iteration / 5) * 100}
+                                            colored={false}
+                                        />
                                         <p className='list__item-name list__item-name--italic'>{record.secondSide}</p>
                                     </div>
                                     <Button

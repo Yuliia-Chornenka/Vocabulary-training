@@ -5,13 +5,15 @@ import { Container } from '../../shared-ui/container';
 import { ContainerTitle } from '../../shared-ui/container-title';
 import { ProgressBar } from '../../shared-ui/progress-bar';
 import { Button } from '../../shared-ui/button';
-import { NotFoundValue } from '../not-found-value';
+import NotFoundValue from '../not-found-value';
 import LexicoService from '../../../services/lexico-service';
 
 class DeckBlock extends Component {
     constructor(props) {
         super(props);
-        this.state = { isDeckExist: true };
+        this.state = {
+            isDeckExist: true,
+        };
     }
 
     lexicoService = new LexicoService();
@@ -48,7 +50,8 @@ class DeckBlock extends Component {
     };
 
     render() {
-        const { backBtn, deleteBtn, history, searchValue, decksArray, createNewDeck, deleteDeck } = this.props;
+        const { backBtn, deleteBtn, history, searchValue, decksArray,
+            createNewDeck, deleteDeck, percent } = this.props;
         const { isDeckExist } = this.state;
         const valueStartSearch = searchValue.length > 1 ? searchValue : '';
         return (
@@ -59,11 +62,17 @@ class DeckBlock extends Component {
                             .map((deck) => (
                                 <Container key={deck.id}>
                                     <ContainerTitle name={deck.title} />
-                                    <ProgressBar className='progress-bar' />
+                                    <ProgressBar
+                                        height='2px'
+                                        marginTop='0'
+                                        percent={percent !== undefined ? percent :
+                                            (deck.learnedRecordsIds.length / deck.recordsIds.length) * 100 }
+                                        colored={false}
+                                    />
                                     <p>
                                         {deck.learnedRecordsIds.length}/{deck.recordsIds.length} records learned
                                     </p>
-                                    {deleteBtn && <p>Learning in progress</p>}
+                                    {deleteBtn && <p>Status: {deck.status}</p>}
                                     <div className='btn__container'>
                                         {backBtn ?
                                             <Fragment>

@@ -26,15 +26,21 @@ export class AppBlock extends Component {
     };
 
     render() {
-        const { isVocabulary, onFileChange, resetVocabulary, decksCount, recordsCount } = this.props;
+        const { isVocabulary, onFileChange, resetVocabulary, decksCount,
+            recordsCount, learnedDecksCount, learnedRecordsCount } = this.props;
         return (
             <Container>
                 <ContainerTitle name='Lexico' />
                 {isVocabulary ? (
                     <Fragment>
-                        <ProgressBar />
-                        <p>0/{decksCount} decks learned</p>
-                        <p>0/{recordsCount} records learned</p>
+                        <ProgressBar
+                            height='2px'
+                            marginTop='0'
+                            percent={(learnedDecksCount / decksCount) * 100}
+                            colored={false}
+                        />
+                        <p>{learnedDecksCount}/{decksCount} decks learned</p>
+                        <p>{learnedRecordsCount}/{recordsCount} records learned</p>
                         <div className='btn__container'>
                             <input
                                 ref={this.fileInput}

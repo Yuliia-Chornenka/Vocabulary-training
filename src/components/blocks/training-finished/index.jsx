@@ -1,15 +1,14 @@
-import React, { Component } from 'react';
+import React from 'react';
 import './index.scss';
 import { Container } from '../../shared-ui/container';
 
-export class TrainingFinished extends Component {
-    render() {
+export const TrainingFinished = () => {
         return (
             <Container>
                 <p className='finish'>
-                    Congratulations! Training finished 🏆
+                    Congratulations! Training finished
+                    <span role="img" aria-label="trophy"> 🏆 </span>
                 </p>
             </Container>
         )
-    }
-}
+};

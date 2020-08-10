@@ -1,12 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
 import './index.scss';
 import { Container } from '../../shared-ui/container';
 import { Input } from '../../shared-ui/input';
 import { ProgressBar } from "../../shared-ui/progress-bar";
 
-export class TrainingForm extends Component {
-    render() {
-        const { label, handleChange,  value } = this.props;
+export const TrainingForm = ({ label, handleChange, value, progressPercent }) => {
         return (
             <Container>
                 <p className='search__title'> {label} </p>
@@ -17,9 +15,11 @@ export class TrainingForm extends Component {
                     value={value}
                 />
                 <ProgressBar
-                    className='progress-bar__big'
+                    height='5px'
+                    marginTop='20px'
+                    percent={progressPercent}
+                    colored={true}
                 />
             </Container>
         )
-    }
-}
+};

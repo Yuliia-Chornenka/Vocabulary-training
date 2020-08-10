@@ -15,7 +15,7 @@ class DeckPage extends Component {
             searchValue: '',
             isMoreLetters: false,
             isNewRecordForm: false,
-            valueSecondSide: ''
+            valueSecondSide: '',
         };
     }
 
@@ -98,7 +98,8 @@ class DeckPage extends Component {
 
     render() {
         const { history, location } = this.props;
-        const { decksArray, recordsList, isMoreLetters, searchValue, isNewRecordForm, valueSecondSide } = this.state;
+        const { decksArray, recordsList, isMoreLetters, searchValue,
+            isNewRecordForm, valueSecondSide } = this.state;
         return (
             <Fragment>
                 <DeckBlock

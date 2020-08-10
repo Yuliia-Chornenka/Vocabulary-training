@@ -15,10 +15,13 @@ class TrainPage extends Component {
         this.state = {
             decksArray: [],
             recordsList: [],
+            listToTrain: [],
             translateValue: '',
             wordIndex: 0,
             wordFirstSide: '',
-            wordSecondSide: '',
+            wordId: '',
+            progressPercent: 0,
+            trainingPercent: 0,
             isTrainingFinished: false,
         };
     }
@@ -32,8 +35,12 @@ class TrainPage extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (this.state.wordIndex !== prevState.wordIndex) {
-            this.getDeck();
+        const { wordIndex, listToTrain } = this.state;
+        if (wordIndex !== prevState.wordIndex) {
+            this.setState({
+                wordFirstSide: listToTrain[wordIndex].firstSide,
+                wordId: listToTrain[wordIndex].id,
+            });
         }
     }
 
@@ -47,30 +54,73 @@ class TrainPage extends Component {
             const record = this.lexicoService.getRecord(recordId);
             recordsList.push(record);
         });
+
+        const listToTrain = recordsList.sort((a, b) => a.iteration > b.iteration ? 1 : -1)
+            .slice(0, 5);
+
         this.setState({
             decksArray: [ deck ],
             recordsList: recordsList,
-            wordFirstSide: recordsList[wordIndex].firstSide,
-            wordSecondSide: recordsList[wordIndex].secondSide,
+            listToTrain: listToTrain,
+            wordId: listToTrain[wordIndex].id,
+            wordFirstSide: listToTrain[wordIndex].firstSide,
         });
     };
 
     handleChange = (e) => {
-        const { wordSecondSide, wordIndex, recordsList } = this.state;
+        const { match } = this.props;
+        const { id } = match.params;
+        const { wordIndex, wordId, listToTrain } = this.state;
         this.setState({ translateValue: e.target.value });
-        if (wordSecondSide === e.target.value && wordIndex - recordsList.length === -1) {
-            this.setState({ isTrainingFinished: true });
+
+        const wordSecondSide = listToTrain[wordIndex].secondSide.toLowerCase();
+
+        if (wordSecondSide=== e.target.value.toLowerCase() && wordIndex - listToTrain.length === -1) {
+            this.setState({
+                isTrainingFinished: true,
+                trainingPercent: 100
+            });
             this.playTrainingSuccessAudio();
+            this.lexicoService.learnRecord(wordId);
+
+            const record = this.lexicoService.getRecord(wordId);
+            if(record.iteration === 5) {
+                this.lexicoService.setLearnedRecord(id, wordId);
+            }
+
+            const deck = this.lexicoService.getDeck(id);
+            if(deck.recordsIds.length === deck.learnedRecordsIds.length) {
+                this.lexicoService.learnDeck(id);
+                const deck = this.lexicoService.getDeck(id);
+                this.setState({ decksArray: [ deck ] });
+            }
             return;
         }
 
-        if (wordSecondSide === e.target.value) {
+        if (wordSecondSide === e.target.value.toLowerCase()) {
             this.setState((state) => ({
                 wordIndex: state.wordIndex + 1,
-                translateValue: ''
+                translateValue: '',
+                progressPercent: 0,
             }));
             this.playRecordSuccessAudio();
+            this.lexicoService.learnRecord(wordId);
+
+            const record = this.lexicoService.getRecord(wordId);
+            if(record.iteration === 5) {
+                this.lexicoService.setLearnedRecord(id, wordId);
+                const deck = this.lexicoService.getDeck(id);
+                this.setState({ decksArray: [ deck ] });
+            }
+            return;
         }
+
+        if (!wordSecondSide.startsWith(e.target.value.toLowerCase())) {
+            this.setState({ progressPercent: 0 });
+            return;
+        }
+
+        this.setState({ progressPercent: (e.target.value.length / wordSecondSide.length) * 100 });
     };
 
     playRecordSuccessAudio = () => {
@@ -88,7 +138,9 @@ class TrainPage extends Component {
     };
 
     render() {
-        const { decksArray, wordFirstSide, translateValue, isTrainingFinished } = this.state;
+        const { decksArray, wordFirstSide, translateValue, progressPercent,
+            isTrainingFinished, listToTrain, wordIndex, trainingPercent } = this.state;
+        const percent = trainingPercent ? trainingPercent : (wordIndex / listToTrain.length) * 100;
         return (
             <Fragment>
                 <DeckBlock
@@ -97,22 +149,24 @@ class TrainPage extends Component {
                     decksArray={decksArray}
                     searchValue=''
                     isDeckPage={true}
+                    percent={percent}
                 />
 
-                { !isTrainingFinished &&
+                {!isTrainingFinished &&
                 <WordToTrain
                     wordFirstSide={wordFirstSide}
-                /> }
+                />}
 
-                { !isTrainingFinished &&
+                {!isTrainingFinished &&
                 <TrainingForm
                     label='enter translation of the record above'
                     handleChange={this.handleChange}
                     value={translateValue}
-                /> }
+                    progressPercent={progressPercent}
+                />}
 
-                { isTrainingFinished &&
-                <TrainingFinished /> }
+                {isTrainingFinished &&
+                <TrainingFinished />}
 
                 <p className='sound'> Sound effects obtained from
                     <a
@@ -124,14 +178,14 @@ class TrainPage extends Component {
                     </a>
                 </p>
 
-                    <audio
-                        ref={this.recordSuccessAudio}
-                        src={recordSuccess}
-                    />
-                    <audio
-                        ref={this.trainingSuccessAudio}
-                        src={trainingSuccess}
-                    />
+                <audio
+                    ref={this.recordSuccessAudio}
+                    src={recordSuccess}
+                />
+                <audio
+                    ref={this.trainingSuccessAudio}
+                    src={trainingSuccess}
+                />
             </Fragment>
         )
     }

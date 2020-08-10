@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { AppBlock } from '../../blocks/app-block';
 import { SearchForm } from '../../blocks/search-form';
 import DeckBlock from '../../blocks/deck-block';
-import { NotFoundValue } from '../../blocks/not-found-value';
+import NotFoundValue from '../../blocks/not-found-value';
 import LexicoService from '../../../services/lexico-service';
 
 export class MainPage extends Component {
@@ -15,6 +15,8 @@ export class MainPage extends Component {
             decksArray: [],
             decksCount: 0,
             recordsCount: 0,
+            learnedDecksCount: 0,
+            learnedRecordsCount: 0
         };
     }
 
@@ -25,8 +27,10 @@ export class MainPage extends Component {
         this.setState({
             isVocabulary: !!vocabulary ? !!vocabulary.decks.length : false,
             decksArray: !!vocabulary ? vocabulary.decks : [],
-            decksCount: vocabulary.decks.length,
-            recordsCount: vocabulary.records.length,
+            decksCount: vocabulary.appData.decksCount,
+            recordsCount: vocabulary.appData.recordsCount,
+            learnedDecksCount: vocabulary.appData.learnedDecksCount,
+            learnedRecordsCount: vocabulary.appData.learnedRecordsCount
         });
     }
 
@@ -36,8 +40,10 @@ export class MainPage extends Component {
             this.setState({
                 isVocabulary: !!vocabulary ? !!vocabulary.decks.length : false,
                 decksArray: !!vocabulary ? vocabulary.decks : [],
-                decksCount: vocabulary.decks.length,
-                recordsCount: vocabulary.records.length,
+                decksCount: vocabulary.appData.decksCount,
+                recordsCount: vocabulary.appData.recordsCount,
+                learnedDecksCount: vocabulary.appData.learnedDecksCount,
+                learnedRecordsCount: vocabulary.appData.learnedRecordsCount
             });
         }
     }
@@ -62,6 +68,10 @@ export class MainPage extends Component {
                     this.setState({
                         isVocabulary: true,
                         decksArray: result.decks,
+                        decksCount: result.appData.decksCount,
+                        recordsCount: result.appData.recordsCount,
+                        learnedDecksCount: result.appData.learnedDecksCount,
+                        learnedRecordsCount: result.appData.learnedRecordsCount
                     });
                 },
             );
@@ -77,7 +87,9 @@ export class MainPage extends Component {
 
     resetVocabulary = () => {
         this.lexicoService.deleteVocabulary().then(
-            () => this.setState({ isVocabulary: false })
+            () => this.setState({
+                isVocabulary: false,
+            })
         )
     };
 
@@ -97,7 +109,8 @@ export class MainPage extends Component {
     };
 
     render() {
-        const { isVocabulary, isMoreLetters, searchValue, decksArray, decksCount, recordsCount } = this.state;
+        const { isVocabulary, isMoreLetters, searchValue, decksArray, decksCount,
+            recordsCount, learnedDecksCount, learnedRecordsCount } = this.state;
         return (
             <Fragment>
                 <AppBlock
@@ -107,6 +120,8 @@ export class MainPage extends Component {
                     resetVocabulary={this.resetVocabulary}
                     decksCount={decksCount}
                     recordsCount={recordsCount}
+                    learnedDecksCount={learnedDecksCount}
+                    learnedRecordsCount={learnedRecordsCount}
                 />
                 <SearchForm
                     label='to search or create decks'
