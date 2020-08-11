@@ -1,4 +1,4 @@
-##Link: https://lexico-7707d.web.app/
+## Link: https://lexico-7707d.web.app/
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
